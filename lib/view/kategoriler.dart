@@ -1,3 +1,6 @@
+import 'package:film_arsivi/DatabaseHelper/sql_database.dart';
+import 'package:film_arsivi/DatabaseHelper/veritabani_yardimcisi.dart';
+import 'package:film_arsivi/model/model_kategori.dart';
 import 'package:film_arsivi/tools/my_const.dart';
 import 'package:film_arsivi/tools/my_extensions.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,20 @@ class Kategoriler extends StatefulWidget {
 
 class _KategorilerState extends State<Kategoriler> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    VeritabaniYardimcisi.erisim();
+    getKategoriler();
+  }
+
+  Future<List<ModelKategori>> getKategoriler() async {
+    SQLiteDB db = SQLiteDB();
+    var liste = await db.tumKategoriler();
+    return liste;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _builadAppBar(),
@@ -24,7 +41,25 @@ class _KategorilerState extends State<Kategoriler> {
         title: "Film Arsivi".text.bold.xl3.makeCentered(),
       );
 
-  _buildBody() {}
+  _buildBody() {
+    return FutureBuilder(
+      future: getKategoriler(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(snapshot.data![index].kategori_ad.toString()),
+              );
+            },
+          );
+        } else {
+          return CircularProgressIndicator().centered();
+        }
+      },
+    );
+  }
 
   FloatingActionButton _builadKategoriEkleFab() {
     return FloatingActionButton(
