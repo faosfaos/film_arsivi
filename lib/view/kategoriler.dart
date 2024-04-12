@@ -39,6 +39,9 @@ class _KategorilerState extends State<Kategoriler> {
 
   AppBar _builadAppBar() => AppBar(
         title: "Film Arsivi".text.bold.xl3.makeCentered(),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+        ],
       );
 
   _buildBody() {
@@ -50,12 +53,14 @@ class _KategorilerState extends State<Kategoriler> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               return ListTile(
+                leading: CircleAvatar(
+                    child: Text(snapshot.data![index].kategori_id.toString())),
                 title: Text(snapshot.data![index].kategori_ad.toString()),
               );
             },
           );
         } else {
-          return CircularProgressIndicator().centered();
+          return const CircularProgressIndicator().centered();
         }
       },
     );
@@ -70,7 +75,11 @@ class _KategorilerState extends State<Kategoriler> {
 
   void _kategoriEkle() async {
     String? kategori = await _buildDialog();
-    print(kategori);
+    if (kategori != null) {
+      SQLiteDB db = SQLiteDB();
+      db.addKategori(ModelKategori(kategori_ad: kategori));
+      setState(() {});
+    }
   }
 
   Future<String?> _buildDialog() {
@@ -79,8 +88,9 @@ class _KategorilerState extends State<Kategoriler> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Kategori Ekle"),
+          title: const Text("Kategori Ekle"),
           content: TextField(
+            autofocus: true,
             onChanged: (value) {
               sonuc = value;
             },
