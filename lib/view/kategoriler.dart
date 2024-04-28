@@ -14,18 +14,19 @@ class Kategoriler extends StatefulWidget {
 }
 
 class _KategorilerState extends State<Kategoriler> {
+  late SQLiteDB db;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     VeritabaniYardimcisi.erisim();
-    getKategoriler();
+    db = SQLiteDB();
+    // getKategoriler();
   }
 
   Future<List<ModelKategori>> getKategoriler() async {
-    SQLiteDB db = SQLiteDB();
-    var liste = await db.tumKategoriler();
-    return liste;
+    return await db.tumKategoriler();
   }
 
   @override
@@ -52,10 +53,12 @@ class _KategorilerState extends State<Kategoriler> {
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
+              var film = snapshot.data!;
               return ListTile(
+                onTap: () {},
                 leading: CircleAvatar(
-                    child: Text(snapshot.data![index].kategori_id.toString())),
-                title: Text(snapshot.data![index].kategori_ad.toString()),
+                    child: Text(film[index].kategori_id.toString())),
+                title: Text(film[index].kategori_ad.toString()),
               );
             },
           );

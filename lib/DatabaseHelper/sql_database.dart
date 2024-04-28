@@ -26,6 +26,10 @@ class SQLiteDB {
 
   void addKategori(ModelKategori kategori) async {
     db = await VeritabaniYardimcisi.erisim();
-    db.insert(Table.kategoriler, kategori.toMap());
+    Map<String, dynamic> map = {};
+    map["kategori_ad"] = kategori.kategori_ad;
+    map["kategori_ad"] = kategori.kategori_ad;
+    db.insert(Table.kategoriler, map);
+    //db.insert(Table.kategoriler, kategori.toMap());
   }
 }

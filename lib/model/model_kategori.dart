@@ -22,5 +22,6 @@ class ModelKategori {
     data['kategori_id'] = kategori_id;
     data['kategori_ad'] = kategori_ad;
     return data;
+    
   }
 }
